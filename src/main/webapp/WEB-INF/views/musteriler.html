@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>Musteriler</h1>
+	<div class="container">
+		<table>
+			<thead>
+				<tr style="font-weight: bold;" bgcolor="lightgreen">
+					<td>ID</td>
+					<td>Name</td>
+					<td>Mail</td>
+					<td>Pass</td>
+					<td> </td>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="musteriler,interStat : ${musteri}">
+					<tr th:bgcolor="${interStat.odd}?white:lightgray"> <!-- tek ise beyaz çift isse gri -->
+						<td>[[${musteriler.id} ]]</td>
+						<td>[[${musteriler.name} ]]</td>
+						<td>[[${musteriler.mail} ]]</td>
+						<td>[[${musteriler.pass} ]]</td>
+						<td> Güncelle </td>
+						<td> Sil </td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+
+
+
+	</div>
+
+</body>
+</html>

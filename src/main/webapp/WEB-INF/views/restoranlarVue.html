@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Restoranlar</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+	<script type="text/javascript">
+		
+	</script>
+</head>
+<body>
+	<div id="app">
+		<h1>Restoranlar</h1>
+	
+		<table id="restoranlarTable">
+			<thead>
+				<tr style="font-weight: bold;" bgcolor="lightgreen">
+					<td>ID</td>
+					<td>Name</td>
+					<td th:colspan="2">İşlem</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="restoran in restoranlar">
+					<td>{{ restoran.id }}</td>
+					<td>
+						<input type="text" v-show="restoran.editMode" v-model="restoran.name" />
+					 	<span v-show="! restoran.editMode">{{ restoran.name }}</span> </td>
+					<td><button type="button" v-on:click="editModeDegistir(restoran);">Değiştir</button> </td>
+					<td><button type="button" v-on:click="sil();" >Sil</button> </td>
+				</tr>
+				
+				<tr>
+					<td>--</td>
+					<td><input type="text" id="restoranName" v-model="newRestoranName" /> </td>
+					<td align="center"> <button type="button" v-on:click="save();" >Kaydet</button> </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	 <script type="text/javascript">
+	 	var myVue = new Vue({
+	 		el: "#app",  
+	 		
+	 		data: {
+	 			newRestoranName: "",
+	 			restoranlar: []
+	 		},
+	 		
+	 		methods: {
+	 			editModeDegistir: function(restoran) {
+	 				if(restoran.editMode) {
+	 					restoran.editMode = false;
+	 				} else {
+	 					restoran.editMode = true;
+	 				}
+	 			},
+	 			
+	 			save: function() {
+	 				var refThis = this;
+	 				var newRestoran = {
+	 					name: this.newRestoranName
+	 				};
+	 				
+	 				$.ajax({
+	 					  type: "POST",
+	 					  url: "/restorans",
+	 					  data: JSON.stringify(newRestoran), // TODO
+	 					  contentType:"application/json; charset=utf-8",
+	 					  dataType: 'json',
+	 					  success: function(result) {
+	 						 console.log('save success result:', result);
+	 						 refThis.restoranlar.push(result);
+	 					  }
+	 					});
+	 			},
+	 			
+	 			
+	 			
+	 			
+	 			listAllRestorans: function(onSuccess) {
+	 				$.ajax({
+	 					  type: "GET",
+	 					  url: "/restorans",  //   api path
+	 					  contentType:"application/json; charset=utf-8",
+	 					  dataType: 'json',
+	 					  success: function(result) {
+	 						 console.log('update success result:', result);
+	 						 
+	 						 if(result) {
+	 							result.forEach(function(item) {
+	 								item.editMode = false;	
+	 							}); 
+	 						 }
+	 						 
+	 						 onSuccess(result);
+	 					  }
+	 					});
+	 			}
+	 		},
+	 		
+	 		mounted: function() {
+	 			var refThis = this;
+	 			
+	 			this.listAllRestorans(function(data) {
+	 				refThis.restoranlar = data;
+	 			});
+	 		}
+	 	});
+	 </script>
+</body>
+</html>

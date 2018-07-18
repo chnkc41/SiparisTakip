@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Restoranlar</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		function save() {
+			var data = {
+				name : $('#restoranName').val()
+			};
+			
+			console.log(data);
+			
+			$.ajax({
+				  type: "POST",
+				  url: "/restorans",
+				  data: JSON.stringify(data), // TODO
+				  contentType:"application/json; charset=utf-8",
+				  dataType: 'json',
+				  success: function(result) {
+					  console.log('save success result:', result);
+					  var newRowCode = "<tr><td>"+result.id+"</td><td>"+data.name+"</td></tr>";
+					  $('#restoranlarTable > tbody:last-child').append(newRowCode);
+					// document.getElementById("restoranlarTable").insertRow(-3).innerHTML = "<tr><td>"+result.id+"</td><td>"+data.name+"</td></tr>";						 
+				  }
+				});
+		}
+		
+		
+		function update() {
+			var data = {
+				id : $('#ID').val(),
+				name : $('#Name').val(),
+			};
+			
+			console.log(data);
+			
+			$.ajax({
+				  type: "PUT",
+				  url: "/restorans",
+				  data: JSON.stringify(data), // TODO
+				  contentType:"application/json; charset=utf-8",
+				  dataType: 'json',
+				  success: function(result) {
+					  console.log('update success result:', result);			  
+				  }
+				});
+		}
+		
+		
+		
+		function deleteRestoran() {
+			var data = {
+					name : $('#IDSil').val()
+				};
+			
+			console.log(data);
+			
+			$.ajax({
+				  type: "DELETE",
+				  url: "/restorans",
+				  data: JSON.stringify(data), // TODO
+				  contentType:"application/json; charset=utf-8",
+				  dataType: 'json',
+				  success: function(result) {
+					  console.log('delete success result:', result);			  
+				  }
+				});
+			
+		}
+		
+		
+		
+	</script>
+</head>
+<body>
+	<h1>Restoranlar</h1>
+
+	<table id="restoranlarTable">
+		<thead>
+			<tr style="font-weight: bold;" bgcolor="lightgreen">
+				<td>ID</td>
+				<td>Name</td>
+				<td th:colspan="2">İşlem</td>
+			</tr>
+		</thead>
+		<tbody>
+			<th:block th:each="restoran, interStat : ${restoranlar}">
+				<tr th:bgcolor="${interStat.odd}?white:lightgray">
+					<!-- tek ise beyaz çift isse gri -->
+					<td><input type="hidden" th:id="${restoran.id}" /> [[${restoran.id} ]] </td>
+					<td>[[${restoran.name} ]]</td>
+					<td>Güncelle</td>
+					<td>Sil</td>
+				</tr>
+			</th:block>
+			<tr>
+				<td>--</td>
+				<td><input type="text" name="restoranName" id="restoranName" /> </td>
+				<td align="center"> <button type="button" onclick="save();" >Kaydet</button> </td>
+			</tr>
+		</tbody>
+	</table>
+		
+		<input type="text" name="ID" id="ID" />
+		<input type="text" name="Name" id="Name" />
+		 <button type="button" onclick="update();" > Update </button>
+		
+		<br/> <br/> 
+
+		<input type="text" name="IDSil" id="IDSil" />
+		 <button type="button" onclick="deleteRestoran();" > Sil </button>
+		 
+		 
+
+
+
+
+
+
+
+	<!-- 
+<script type="text/javascript">
+function ekle(){
+    // Create our XMLHttpRequest object
+    var hr = new XMLHttpRequest();
+    // Create some variables we need to send to our PHP file
+    var url = "islem.php";
+	var ekle = document.getElementById("ekle").value;
+	var ono = document.getElementById("restoranName").value;
+    var adi = document.getElementById("adiekle").value;
+    var soyadi = document.getElementById("soyadiekle").value;
+    var vars = "ekle="+ekle+"&ono="+ono+"&adi="+adi+"&soyadi="+soyadi;   
+    // Set content type header information for sending url encoded variables in the request
+    hr.open("POST", url, true);
+	    hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // Access the onreadystatechange event for the XMLHttpRequest object
+    hr.onreadystatechange = function() {
+	    if(hr.readyState == 4 && hr.status == 200) {
+		    var return_data = hr.responseText;
+			 document.getElementById("onoekle").value = " ";			
+			 document.getElementById("adiekle").value = " ";
+			 document.getElementById("soyadiekle").value = " ";		
+			 
+		     var table = document.getElementById("myTable");
+			 var row = table.insertRow(0);
+			 
+ 			 var cell1 = row.insertCell(0);
+ 			 var cell2 = row.insertCell(1);
+			 var cell3 = row.insertCell(2);
+			 var cell4 = row.insertCell(3);
+			 var cell5 = row.insertCell(4);
+			 var cell6 = row.insertCell(5);
+			 
+			// onclick='deleteJs({$kayit[0]})' 
+			 
+		     cell1.innerHTML = "";
+  			 cell2.innerHTML = ono;
+    		 cell3.innerHTML = adi;
+			 cell4.innerHTML = soyadi;
+			 cell5.innerHTML = "<a href='#' onClick='degistir(0)'> Değiştir </a> ";
+			 cell6.innerHTML = "<a href='#' onClick='sil(0)'> Sil </a> ";
+
+			document.getElementById("status").innerHTML = return_data;
+		} 
+    }
+    // Send the data to PHP now... and wait for response to update the status div
+
+    hr.send(vars); // Actually execute the request
+    document.getElementById("status").innerHTML = "processing...";
+	
+
+}  // ekle son 
+
+
+</script>
+
+-->
+
+</body>
+</html>
